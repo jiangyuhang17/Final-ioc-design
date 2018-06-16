@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'ioc/images/favicon.ico' %}">
+
+    <title>IOC</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'ioc/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static 'ioc/css/assets/css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'ioc/css/dashboard.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="{% static 'ioc/css/assets/js/ie8-responsive-file-warning.js' %}"></script><![endif]-->
+    <script src="{% static 'ioc/css/assets/js/ie-emulation-modes-warning.js' %}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        html{height:100%}
+        body{height:100%;margin:0px;padding:0px}
+        #container{height: 100%}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=zbTLH8GdtQjPPgzgttZ4xn6ZGmmPBnD5"></script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="color: white">车联网设计平台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right" style="margin-right: 15px">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">GPS<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">实时位置</li>
+                  {% for item in car %}
+                      <li><a href="/position/{{ item.id }}">{{ item.cid}}</a></li>
+                  {% endfor %}
+                    <li role="separator" class="divider"></li>
+                    <li class="dropdown-header">活跃地区</li>
+                    {% for item in car %}
+                      <li><a href="/regular/{{ item.id }}">{{ item.cid}}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我的汽车<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/">汽车信息</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="dropdown-header">实时数据</li>
+                    <li><a href="/rotation">转速</a></li>
+                    <li><a href="/fuelremain">油量</a></li>
+                    <li><a href="/pressure">胎压</a></li>
+                    <li><a href="/watertemperature">水温</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="/drivingrecord/0">驾驶记录</a></li>
+                    <li><a href="/evaluation/0">安全评分</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ uname }}
+                    {% if mywarn != 0 %}
+                        <span class="badge">{{ mywarn }}</span>
+                    {% endif %}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="/userinfo">个人信息</a></li>
+                  <li><a href="/password">修改密码</a></li>
+                  <li><a href="/warning">我的警告
+                      {% if mywarn != 0 %}
+                          <span class="badge">{{ mywarn }}</span>
+                      {% endif %}</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="/logout">登出</a></li>
+                </ul>
+              </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="container"></div>
+    <script src="{% static 'ioc/jquery-2.1.1/jquery.min.js' %}"></script>
+    <script src="{% static 'ioc/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'ioc/css/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script>
+    // 初始化地图
+    var map = new BMap.Map("container");
+    var point = new BMap.Point(116.404, 39.915);
+    map.centerAndZoom(point, 18);
+    //开启鼠标滚轮缩放
+    map.enableScrollWheelZoom(true);
+    
+    function addMarker(point, index){  // 创建图标对象
+        var myIcon = new BMap.Icon("{% static 'ioc/images/movecar.jpg' %}", new BMap.Size(60, 50));
+        // 创建标注对象并添加到地图
+        var marker = new BMap.Marker(point, {icon: myIcon});
+        map.addOverlay(marker);
+    }
+
+    
+    $(document).ready(function () {
+        txt = [{"longitude":116.641709,"latitude":39.891466},
+        {"longitude":116.641565,"latitude":39.887979},
+        {"longitude":116.636319,"latitude":39.887923},
+        {"longitude":116.633013,"latitude":39.887453},
+        {"longitude":116.631989,"latitude":39.884394},
+        {"longitude":116.631068,"latitude":39.881221},
+        {"longitude":116.630327,"latitude":39.87976},
+        {"longitude":116.62938,"latitude":39.877971},
+        {"longitude":116.629209,"latitude":39.876746},
+        {"longitude":116.628764,"latitude":39.875922}]
+        l = txt.length;
+        lolist = [];
+        lalist = [];
+        var i,j,lo,la,lolen,lalen;
+        for(i=0;i<9;i++){
+            lo = txt[i]["longitude"];
+            la = txt[i]["latitude"];
+            lolen = (txt[i+1]["longitude"]-txt[i]["longitude"])/60;
+            lalen = (txt[i+1]["latitude"]-txt[i]["latitude"])/60;
+            for(j=0;j<60;j++){
+                lo += lolen;
+                la += lalen;
+                lolist[i*60+j]=lo;
+                lalist[i*60+j]=la;
+            }
+        }
+        ;
+        var myIcon = new BMap.Icon("{% static 'ioc/images/movecar.jpg' %}", new BMap.Size(60, 50));
+        var polyline;
+        point = new BMap.Point(txt[0]["longitude"], txt[0]["latitude"]);
+        map.centerAndZoom(point, 18);
+        var marker = new BMap.Marker(point, {icon: myIcon});
+        map.addOverlay(marker);
+        console.log('okkk')
+        for (i=0;i<500;i++) {   //这里是循环定时 上传
+            (function(i){
+                setTimeout(function(){
+                    map.removeOverlay(marker);
+                    point = new BMap.Point(lolist[i], lalist[i]);
+                    marker = new BMap.Marker(point, {icon: myIcon});
+                    map.addOverlay(marker);
+                    polyline = new BMap.Polyline([
+                        new BMap.Point(lolist[i], lalist[i]),
+                        new BMap.Point(lolist[i+1], lalist[i+1])
+                        ],
+                        {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+                    );
+                    map.addOverlay(polyline);
+                },i*1000);
+            })(i);
+        }
+    });        
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <link rel="icon" href="{% static 'ioc/images/favicon.ico' %}">
+    <title>Sign In</title>
+
+    <link href="{% static 'ioc/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static 'ioc/css/assets/css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'ioc/css/signin.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="{% static 'ioc/css/assets/js/ie-emulation-modes-warning.js' %}"></script>
+
+</head>
+
+<body background="{% static 'ioc/images/signinbg.jpg' %}">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="panel panel-default" style="padding-bottom: 50px;">
+                    <div class="panel-heading" style="padding: 20px">
+                      <h3 class="panel-title" style="font-size: 20px"><b>车联网平台设计</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-signin" style="max-width: 550px;" action="signup_info" method="POST" onsubmit="return checked()">{% csrf_token %}
+
+                            <h2 class="form-signin-heading" style="font-size: 24px;padding-bottom: 15px">注册成功！请完善个人信息</h2>
+                            <div id="alert" class="alert alert-danger alert-dismissible" style="display: none;" role="alert">
+                                <strong>提醒</strong> <span id="warning" style="font-size: 14px"></span>
+                            </div>
+                            <input type="hidden" value={{ account }} name="account">
+                            <span><em>姓名</em></span>
+                            <input name="uname" type="text" class="form-control" style="margin: 10px 0px" maxlength="50" placeholder="name" required autofocus>
+
+                            <span><em>性别</em></span><br>
+                            <div style="margin: 15px 0px;">
+                                <div class="radio" style="display: inline;margin-right: 200px;">
+                                  <label>
+                                    <input type="radio" name="usex" value="0" checked>
+                                    <span>男</span>
+                                  </label>
+                                </div>
+                                <div class="radio" style="display: inline">
+                                  <label>
+                                    <input type="radio" name="usex" value="1">
+                                    <span>女</span>
+                                  </label>
+                                </div>
+                            </div>
+
+                            <span><em>出生年月</em></span><br>
+                            <input name="uyear" type="text" class="form-control " maxlength="4" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="year" required>
+                            <span>年</span>
+                            <input name="umonth" type="text" class="form-control " maxlength="2" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="month" required>
+                            <span>月</span>
+
+                            <span><em>驾龄</em></span>
+                            <input name="udrive_year" type="text" class="form-control" maxlength="2" style="margin: 10px 0px;display: inline;width: 95%" placeholder="driving experience" required>
+                            <span>年</span>
+
+                            <span><em>地区</em></span>
+                            <select name="uaddress" class="form-control" style="margin: 10px 0px">
+                                <option value="浙江省">浙江省</option>
+                                <option value="北京市" selected>北京市</option>
+                                <option value="天津市">天津市</option>
+                                <option value="安徽省">安徽省</option>
+                                <option value="上海市">上海市</option>
+                                <option value="福建省">福建省</option>
+                                <option value="重庆市">重庆市</option>
+                                <option value="江西省">江西省</option>
+                                <option value="山东省">山东省</option>
+                                <option value="河南省">河南省</option>
+                                <option value="湖北省">湖北省</option>
+                                <option value="湖南省">湖南省</option>
+                                <option value="广东省">广东省</option>
+                                <option value="海南省">海南省</option>
+                                <option value="山西省">山西省</option>
+                                <option value="青海省">青海省</option>
+                                <option value="江苏省">江苏省</option>
+                                <option value="辽宁省">辽宁省</option>
+                                <option value="吉林省">吉林省</option>
+                                <option value="台湾省">台湾省</option>
+                                <option value="河北省">河北省</option>
+                                <option value="贵州省">贵州省</option>
+                                <option value="四川省">四川省</option>
+                                <option value="云南省">云南省</option>
+                                <option value="陕西省">陕西省</option>
+                                <option value="甘肃省">甘肃省</option>
+                                <option value="黑龙江省">黑龙江省</option>
+                                <option value="香港特别行政区">香港特别行政区</option>
+                                <option value="澳门特别行政区">澳门特别行政区</option>
+                                <option value="广西壮族自治区">广西壮族自治区</option>
+                                <option value="宁夏回族自治区">宁夏回族自治区</option>
+                                <option value="新疆维吾尔自治区">新疆维吾尔自治区</option>
+                                <option value="内蒙古自治区">内蒙古自治区</option>
+                                <option value="西藏自治区">西藏自治区</option>
+                            </select>
+
+                            <span><em>手机</em></span>
+                            <input name="uphone" type="text" class="form-control" maxlength="11" style="margin: 10px 0px 30px 0px;" placeholder="phone" required>
+
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">完成</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+
+    <script>
+
+        function checked(){
+            var year = document.getElementsByName("uyear")[0].value;
+            var month = document.getElementsByName("umonth")[0].value;
+            var warntext = document.getElementById("warning");
+            var judge = true;
+            warntext.innerHTML = "";
+            if(datecheck(year,month)){
+                warntext.innerHTML += "<br>"+"请输入正确的出生年月";judge = false;
+            }
+
+            var driveyear = document.getElementsByName("udrive_year")[0].value;
+            if(isNaN(Number(driveyear))){
+                warntext.innerHTML += "<br>"+"请输入正确的驾龄";judge = false;
+            }
+
+            var phone = document.getElementsByName("uphone")[0].value;
+            if(phonecheck(phone)){
+                warntext.innerHTML += "<br>"+"请输入正确的手机号";judge = false;
+            }
+            if(judge==false){
+                document.getElementById("alert").style.display = "block";
+                console.log("al");
+            }
+
+            return judge;
+        }
+    </script>
+
+    <script src="{% static 'ioc/jquery-2.1.1/jquery.min.js' %}"></script>
+    <script src="{% static 'ioc/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'ioc/css/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script src="{% static 'ioc/js/inputcheck.js' %}"></script>
+
+</body>
+</html>

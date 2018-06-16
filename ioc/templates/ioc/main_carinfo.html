@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <link rel="icon" href="{% static 'ioc/images/favicon.ico' %}">
+    <title>IOC</title>
+
+    <link href="{% static 'ioc/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static 'ioc/css/assets/css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'ioc/css/signin.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="{% static 'ioc/css/assets/js/ie-emulation-modes-warning.js' %}"></script>
+
+</head>
+
+<body background="{% static 'ioc/images/signinbg.jpg' %}">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="panel panel-default" style="padding-bottom: 50px;">
+                    <div class="panel-heading" style="padding: 20px">
+                      <h3 class="panel-title" style="font-size: 20px"><b>车联网平台设计</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <a href="/" style="float: right;font-size: 18px;">返回>></a>
+                        <form class="form-signin" style="max-width: 550px;" action="carinfo" method="POST" onsubmit="return checked()">{% csrf_token %}
+
+                            <h2 class="form-signin-heading" style="font-size: 24px;padding-bottom: 15px">填写汽车信息</h2>
+                            <div id="alert" class="alert alert-danger alert-dismissible" style="display: none;" role="alert">
+                                <strong>提醒</strong> <span id="warning" style="font-size: 14px"></span>
+                            </div>
+                            <span><em>车牌</em></span>
+                            <input name="cid" type="text" class="form-control" style="margin: 10px 0px" maxlength="50" placeholder="plate number" required autofocus>
+
+                            <span><em>汽车品牌</em></span>
+                            <input name="cbrand" type="text" class="form-control" style="margin: 10px 0px" maxlength="20" placeholder="brand" required>
+
+                            <span><em>汽车排量</em></span>
+                            <input name="cdisplace" type="text" class="form-control" maxlength="5" style="margin: 10px 0px;display: inline;width: 95%" placeholder="displace" required>
+                            <span>升</span>
+
+                            <span><em>出厂时间</em></span><br>
+                            <input name="cbirth_year" type="text" class="form-control " maxlength="4" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="year" required>
+                            <span>年</span>
+                            <input name="cbirth_month" type="text" class="form-control " maxlength="2" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="month" required>
+                            <span>月</span>
+
+                            <span><em>初用时间</em></span><br>
+                            <input name="cuse_year" type="text" class="form-control " maxlength="4" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="year" required>
+                            <span>年</span>
+                            <input name="cuse_month" type="text" class="form-control " maxlength="2" style="margin: 10px 0px;display: inline;width: 45%;" placeholder="month" required>
+                            <span>月</span>
+
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top: 30px">完成</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+
+
+
+    <script src="{% static 'ioc/jquery-2.1.1/jquery.min.js' %}"></script>
+    <script src="{% static 'ioc/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'ioc/css/assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script src="{% static 'ioc/js/inputcheck.js' %}"></script>
+
+<script>
+        function checked(){
+            var cdis = document.getElementsByName("cdisplace")[0].value
+            var byear = document.getElementsByName("cbirth_year")[0].value;
+            var bmonth = document.getElementsByName("cbirth_month")[0].value;
+            var uyear = document.getElementsByName("cuse_year")[0].value;
+            var umonth = document.getElementsByName("cuse_month")[0].value;
+            var warntext = document.getElementById("warning");
+            var judge = true;
+            warntext.innerHTML = "";
+            if(isNaN(Number(cdis))){
+                warntext.innerHTML += "<br>"+"请输入正确的汽车排量";judge = false;
+            }
+            if(datecheck(byear,bmonth)){
+                warntext.innerHTML += "<br>"+"请输入正确的出厂年月";judge = false;
+            }
+            if(datecheck(uyear,umonth)){
+                warntext.innerHTML += "<br>"+"请输入正确的初用年月";judge = false;
+            }
+
+            if(judge==false){
+                document.getElementById("alert").style.display = "block";
+            }
+
+            return judge;
+        }
+    </script>
+
+</body>
+</html>
